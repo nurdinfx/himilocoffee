@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api, { BASE_URL } from '../services/api';
+import { Search } from 'lucide-react';
 
 import { useCart } from '../contexts/CartContext';
 
