@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import api from '../services/api';
+import api, { BASE_URL } from '../services/api';
+
 import { useCart } from '../contexts/CartContext';
 
 import { MenuSkeleton } from '../components/Skeleton';
@@ -46,7 +47,8 @@ const Menu = () => {
   const renderProductImage = (product) => {
     const imageUrl = product.image?.startsWith('http') 
         ? product.image 
-        : `http://localhost:5000${product.image}`;
+        : `${BASE_URL}${product.image}`;
+
     
     return (
         <img 
@@ -62,31 +64,35 @@ const Menu = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex justify-between items-center mb-12">
-        <h1 className="text-4xl font-black text-gray-900 tracking-tight">Our <span className="text-primary-600">Menu</span></h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-12 gap-4">
+        <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">Our <span className="text-primary-600">Menu</span></h1>
+        <div className="w-full sm:w-auto flex items-center bg-white border border-gray-100 rounded-2xl px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-primary-500 transition-all">
+           <Search size={20} className="text-gray-400 mr-2" />
+           <input type="text" placeholder="Search menu..." className="bg-transparent border-none focus:ring-0 w-full sm:w-48 text-sm font-medium" />
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
         {products.map((product) => (
-          <div key={product._id} className="group bg-white rounded-[32px] overflow-hidden shadow-xl shadow-black/5 hover:shadow-primary-500/10 transition-all border border-gray-100 p-2">
-            <div className="relative h-64 rounded-[26px] overflow-hidden mb-6 bg-gray-50">
+          <div key={product._id} className="group bg-white rounded-[32px] overflow-hidden shadow-xl shadow-black/5 hover:shadow-primary-500/10 transition-all border border-gray-100 p-2 sm:p-3">
+            <div className="relative h-48 sm:h-64 rounded-[24px] sm:rounded-[26px] overflow-hidden mb-4 sm:mb-6 bg-gray-50">
                 {renderProductImage(product)}
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-2xl flex-row items-center hidden group-hover:flex">
-                    <ShoppingBagIcon size={14} className="text-primary-600 mr-1" />
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-2xl flex items-center shadow-sm sm:hidden group-hover:flex transition-all">
+                    <ShoppingBagIcon size={12} className="text-primary-600 mr-1" />
                     <span className="text-[10px] font-black uppercase text-gray-900">Add Quick</span>
                 </div>
             </div>
-            <div className="p-5">
-              <h3 className="text-xl font-bold text-gray-900 truncate">{product.name}</h3>
-              <p className="text-gray-500 text-sm mt-1 h-10 overflow-hidden">{product.description}</p>
+            <div className="px-3 pb-3 sm:px-4 sm:pb-4">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{product.name}</h3>
+              <p className="text-gray-500 text-xs sm:text-sm mt-1 h-10 overflow-hidden line-clamp-2 leading-snug">{product.description}</p>
               <div className="flex items-center justify-between mt-4">
-                <span className="text-2xl font-extrabold text-primary-600">${product.price.toFixed(2)}</span>
+                <span className="text-xl sm:text-2xl font-black text-primary-600">${product.price.toFixed(2)}</span>
                 <button 
                   onClick={() => addToCart(product)}
-                  className="bg-primary-50 text-primary-600 hover:bg-primary-600 hover:text-white p-3 rounded-full transition-colors"
+                  className="bg-primary-50 text-primary-600 hover:bg-primary-600 hover:text-white p-3 sm:p-4 rounded-2xl transition-all transform active:scale-90 shadow-sm"
                 >
-                  <ShoppingBagIcon className="w-5 h-5" />
+                  <ShoppingBagIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </div>
             </div>
