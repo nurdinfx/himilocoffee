@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
+import { ShoppingBag, Clock, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { OrderSkeleton } from '../components/Skeleton';
 
 const OrderHistory = () => {

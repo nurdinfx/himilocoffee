@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Menu, Search, X, LogOut, ChevronRight } from 'lucide-react';
+import { ShoppingCart, User, Menu as MenuIcon, Search, X, LogOut, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
@@ -94,7 +94,7 @@ const MainLayout = () => {
                 className="md:hidden text-gray-500 hover:text-primary-600 p-2 transform active:scale-90 transition-transform"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
-                {isMobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+                {isMobileMenuOpen ? <X className="w-7 h-7" /> : <MenuIcon className="w-7 h-7" />}
               </button>
             </div>
           </div>
