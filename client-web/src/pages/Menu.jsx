@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import api, { BASE_URL } from '../services/api';
-import { Search } from 'lucide-react';
 
 import { useCart } from '../contexts/CartContext';
 
@@ -21,6 +20,23 @@ const ShoppingBagIcon = ({ className, size = 20 }) => (
         className={className}
     >
         <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+    </svg>
+);
+
+const SearchIcon = ({ className, size = 20 }) => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width={size} 
+        height={size} 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className={className}
+    >
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
     </svg>
 );
 
@@ -69,7 +85,7 @@ const Menu = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-12 gap-4">
         <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">Our <span className="text-primary-600">Menu</span></h1>
         <div className="w-full sm:w-auto flex items-center bg-white border border-gray-100 rounded-2xl px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-primary-500 transition-all">
-           <Search size={20} className="text-gray-400 mr-2" />
+           <SearchIcon size={20} className="text-gray-400 mr-2" />
            <input type="text" placeholder="Search menu..." className="bg-transparent border-none focus:ring-0 w-full sm:w-48 text-sm font-medium" />
         </div>
       </div>
