@@ -37,15 +37,25 @@ const authUser = async (req, res) => {
 const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
-    const userExists = await User.findOne({ email });
+
+    // Validate required fields explicitly
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Name, email, and password are required' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    const userExists = await User.findOne({ email: email.toLowerCase().trim() });
 
     if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'User already exists with this email' });
     }
 
     const user = await User.create({
-      name,
-      email,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
       password,
       role: role || 'customer',
     });
@@ -62,10 +72,16 @@ const registerUser = async (req, res) => {
       res.status(400).json({ message: 'Invalid user data' });
     }
   } catch (error) {
+    // Handle MongoDB duplicate key error
     if (error.code === 11000) {
-        return res.status(400).json({ message: 'Email already registered' });
+      return res.status(400).json({ message: 'Email already registered' });
     }
-    console.error('Registration error:', error);
+    // Handle Mongoose validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(e => e.message);
+      return res.status(400).json({ message: messages.join(', ') });
+    }
+    console.error('Registration error:', error.message);
     res.status(500).json({ message: 'Server Error during registration', error: error.message });
   }
 };
