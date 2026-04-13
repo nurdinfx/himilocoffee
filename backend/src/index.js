@@ -7,7 +7,10 @@ const connectDB = require('./config/db');
 const path = require('path');
 
 // Connect to database
-connectDB();
+connectDB().then(() => {
+  const initializeAdmin = require('./utils/initAdmin');
+  initializeAdmin();
+});
 
 const app = express();
 const server = http.createServer(app);
