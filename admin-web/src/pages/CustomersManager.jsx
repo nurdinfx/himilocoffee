@@ -1,6 +1,23 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
-import { User, Mail, Shield, Calendar, Search, Filter, MoreVertical } from 'lucide-react';
+import { User, Mail, Shield, Calendar, Filter, MoreVertical } from 'lucide-react';
+
+const SearchIcon = ({ className, size = 20 }) => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width={size} 
+        height={size} 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className={className}
+    >
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+    </svg>
+);
 
 const CustomersManager = () => {
   const [users, setUsers] = useState([]);
@@ -48,7 +65,7 @@ const CustomersManager = () => {
 
       <div className="flex flex-col md:flex-row gap-4">
          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input 
                type="text"
                placeholder="Search by name or email..."

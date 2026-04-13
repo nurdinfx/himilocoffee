@@ -1,7 +1,24 @@
 import { useState, useEffect } from 'react';
 import api, { BASE_URL } from '../services/api';
-import { Plus, Edit2, Trash2, Image as ImageIcon, Search, Filter, X, ChevronRight, Upload } from 'lucide-react';
+import { Plus, Edit2, Trash2, Image as ImageIcon, Filter, X, ChevronRight, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const SearchIcon = ({ className, size = 20 }) => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width={size} 
+        height={size} 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className={className}
+    >
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+    </svg>
+);
 
 const MenuManager = () => {
     const [products, setProducts] = useState([]);
@@ -159,7 +176,7 @@ const MenuManager = () => {
             {/* Filters Bar */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                 <div className="md:col-span-8 relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-600 transition-colors w-5 h-5" />
+                    <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-600 transition-colors w-5 h-5" />
                     <input 
                         type="text" 
                         placeholder="Search products..." 
