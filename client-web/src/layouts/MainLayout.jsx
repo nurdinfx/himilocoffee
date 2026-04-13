@@ -1,34 +1,17 @@
 import { useState } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Menu as MenuIcon, X, LogOut, ChevronRight } from 'lucide-react';
+import { ShoppingCart, User, Menu as MenuIcon, X, LogOut, ChevronRight, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 
-const SearchIcon = ({ className, size = 20 }) => (
-    <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        width={size} 
-        height={size} 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
-        className={className}
-    >
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
-    </svg>
-);
-
 const MainLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const auth = useAuth() || {};
-  const user = auth.user || null;
-  const logout = auth.logout || (() => {});
-  const cartContext = useCart() || {};
-  const cartItems = cartContext.cartItems || [];
+  const auth = useAuth();
+  const user = auth?.user || null;
+  const logout = auth?.logout || (() => { });
+  const cartContext = useCart();
+  const cartItems = cartContext?.cartItems || [];
   const navigate = useNavigate();
 
   const navLinks = [
@@ -58,9 +41,9 @@ const MainLayout = () => {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-8">
               {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  to={link.href} 
+                <Link
+                  key={link.name}
+                  to={link.href}
                   className="text-gray-600 hover:text-primary-600 font-medium transition-colors"
                 >
                   {link.name}
@@ -70,14 +53,14 @@ const MainLayout = () => {
 
             {/* Actions */}
             <div className="flex items-center space-x-3 sm:space-x-5">
-              <button className="hidden sm:block text-gray-500 hover:text-primary-600 transition-colors p-2">
-                <SearchIcon className="w-6 h-6" />
-              </button>
-              
+              <Link to="/search" className="hidden sm:block text-gray-500 hover:text-primary-600 transition-colors p-2">
+                <Search className="w-6 h-6" />
+              </Link>
+
               <Link to="/cart" className="relative text-gray-500 hover:text-primary-600 transition-colors p-2">
                 <ShoppingCart className="w-6 h-6" />
                 {cartItems.length > 0 && (
-                  <span className="absolute top-0 right-0 bg-primary-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
+                  <span className="absolute -top-1 -right-1 bg-primary-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
                     {cartItems.length}
                   </span>
                 )}
@@ -87,14 +70,18 @@ const MainLayout = () => {
               <div className="hidden md:flex items-center space-x-3 ml-4 border-l pl-5 border-gray-200">
                 {user ? (
                   <div className="flex items-center space-x-4">
-                     <Link to="/profile" className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors">
-                        <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold text-xs uppercase shadow-inner">
-                          {user.name?.charAt(0)}
-                        </div>
-                        <span className="font-semibold">{user.name}</span>
-                     </Link>
-                     <Link to="/orders" className="text-gray-600 font-medium hover:text-primary-600 text-sm border-l pl-4 border-gray-100">My Orders</Link>
-                     <button onClick={logout} className="text-gray-400 font-medium hover:text-red-500 text-sm transition-colors">Logout</button>
+                    <Link to="/profile" className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors">
+                      <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold text-xs uppercase shadow-inner">
+                        {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                      </div>
+                      <span className="font-semibold hidden lg:inline">{user.name?.split(' ')[0]}</span>
+                    </Link>
+                    <Link to="/orders" className="text-gray-600 font-medium hover:text-primary-600 text-sm border-l pl-4 border-gray-100">
+                      My Orders
+                    </Link>
+                    <button onClick={handleLogout} className="text-gray-400 font-medium hover:text-red-500 text-sm transition-colors">
+                      Logout
+                    </button>
                   </div>
                 ) : (
                   <>
@@ -107,7 +94,7 @@ const MainLayout = () => {
               </div>
 
               {/* Mobile Menu Button */}
-              <button 
+              <button
                 className="md:hidden text-gray-500 hover:text-primary-600 p-2 transform active:scale-90 transition-transform"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
@@ -122,14 +109,14 @@ const MainLayout = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[60] md:hidden"
               onClick={() => setIsMobileMenuOpen(false)}
             />
-            <motion.div 
+            <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
@@ -139,6 +126,7 @@ const MainLayout = () => {
               <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-primary-50">
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-extrabold text-primary-600">Himilo</span>
+                  <span className="text-xl font-semibold text-gray-800">Eats</span>
                 </div>
                 <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-gray-500 hover:bg-white rounded-full transition-colors shadow-sm">
                   <X className="w-6 h-6" />
@@ -150,37 +138,37 @@ const MainLayout = () => {
                   <div className="px-6 py-6 mb-4 bg-gray-50 mx-4 rounded-2xl border border-gray-100">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center text-primary-600 font-bold text-xl uppercase shadow-sm">
-                        {user.name?.charAt(0)}
+                        {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
                       </div>
                       <div>
-                        <p className="font-bold text-gray-900 text-lg leading-tight">{user.name}</p>
+                        <p className="font-bold text-gray-900 text-lg leading-tight">{user.name || 'User'}</p>
                         <p className="text-sm text-gray-500">{user.email}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
-                       <Link 
-                        to="/profile" 
+                      <Link
+                        to="/profile"
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="flex flex-col items-center justify-center p-3 bg-white rounded-xl border border-gray-100 hover:border-primary-200"
-                       >
-                         <User className="w-5 h-5 text-gray-400 mb-1" />
-                         <span className="text-xs font-bold text-gray-600">Profile</span>
-                       </Link>
-                       <Link 
-                        to="/orders" 
+                      >
+                        <User className="w-5 h-5 text-gray-400 mb-1" />
+                        <span className="text-xs font-bold text-gray-600">Profile</span>
+                      </Link>
+                      <Link
+                        to="/orders"
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="flex flex-col items-center justify-center p-3 bg-white rounded-xl border border-gray-100 hover:border-primary-200"
-                       >
-                         <ShoppingCart className="w-5 h-5 text-gray-400 mb-1" />
-                         <span className="text-xs font-bold text-gray-600">Orders</span>
-                       </Link>
+                      >
+                        <ShoppingCart className="w-5 h-5 text-gray-400 mb-1" />
+                        <span className="text-xs font-bold text-gray-600">Orders</span>
+                      </Link>
                     </div>
                   </div>
                 )}
 
                 <nav className="px-4 space-y-1">
                   {navLinks.map((link) => (
-                    <Link 
+                    <Link
                       key={link.name}
                       to={link.href}
                       onClick={() => setIsMobileMenuOpen(false)}
@@ -223,7 +211,7 @@ const MainLayout = () => {
         <div className="max-w-7xl mx-auto px-6 sm:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
           <div className="space-y-4">
             <h3 className="text-2xl font-bold text-primary-500 mb-4 tracking-tight">Himilo Eats</h3>
-            <p className="text-gray-400 leading-relaxed">Delivering happiness to your doorstep, fresh and hot! The best coffee and food experience in the city.</p>
+            <p className="text-gray-400 leading-relaxed">Delivering happiness to your doorstep, fresh and hot! The best food experience in the city.</p>
           </div>
           <div>
             <h4 className="font-bold text-lg mb-6 border-b border-gray-800 pb-2">Quick Links</h4>
