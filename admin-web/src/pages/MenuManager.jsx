@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api, { BASE_URL } from '../services/api';
-import { Plus, Edit2, Trash2, Image as ImageIcon, Search, Filter, X, ChevronRight, Upload, Category } from 'lucide-react';
+import { Plus, Edit2, Trash2, Image as ImageIcon, Search, Filter, X, ChevronRight, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const MenuManager = () => {
