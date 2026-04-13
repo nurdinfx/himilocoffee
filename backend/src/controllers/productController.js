@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 
@@ -45,6 +46,10 @@ const createProduct = async (req, res) => {
   try {
     const { name, price, description, image, category } = req.body;
 
+    if (category && !mongoose.Types.ObjectId.isValid(category)) {
+      return res.status(400).json({ message: 'Invalid Category ID provided' });
+    }
+
     const product = new Product({
       name,
       price,
@@ -56,6 +61,9 @@ const createProduct = async (req, res) => {
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ message: 'Validation Error', error: error.message });
+    }
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
@@ -66,6 +74,11 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { name, price, description, image, category, countInStock } = req.body;
+
+    if (category && !mongoose.Types.ObjectId.isValid(category)) {
+      return res.status(400).json({ message: 'Invalid Category ID provided' });
+    }
+
     const product = await Product.findById(req.params.id);
 
     if (product) {
@@ -82,6 +95,9 @@ const updateProduct = async (req, res) => {
       res.status(404).json({ message: 'Product not found' });
     }
   } catch (error) {
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ message: 'Validation Error', error: error.message });
+    }
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };

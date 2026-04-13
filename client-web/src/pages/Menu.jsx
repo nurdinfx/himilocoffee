@@ -62,7 +62,7 @@ const Menu = () => {
   if (loading) return <MenuSkeleton />;
 
   const renderProductImage = (product) => {
-    const imageUrl = product.image?.startsWith('http') 
+    const imageUrl = product.image?.startsWith('data:') || product.image?.startsWith('http') 
         ? product.image 
         : `${BASE_URL}${product.image}`;
 

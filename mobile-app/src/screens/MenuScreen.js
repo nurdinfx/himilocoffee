@@ -26,7 +26,7 @@ const MenuScreen = ({ route, navigation }) => {
   }, []);
 
   const renderProduct = ({ item }) => {
-    const imageUrl = item.image?.startsWith('http') 
+    const imageUrl = item.image?.startsWith('data:') || item.image?.startsWith('http') 
         ? item.image 
         : `${BASE_URL}${item.image}`;
 

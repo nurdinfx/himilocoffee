@@ -207,7 +207,7 @@ const MenuManager = () => {
                                         <div className="w-20 h-20 bg-gray-100 rounded-[24px] overflow-hidden border-2 border-white shadow-xl group-hover:scale-105 transition-transform">
                                             <img 
                                                 className="h-full w-full object-cover" 
-                                                src={item.image?.startsWith('http') ? item.image : `${BASE_URL}${item.image}`} 
+                                                src={item.image?.startsWith('data:') || item.image?.startsWith('http') ? item.image : `${BASE_URL}${item.image}`} 
                                                 alt={item.name} 
                                                 onError={(e) => {
                                                     e.target.onerror = null;
@@ -310,7 +310,7 @@ const MenuManager = () => {
                                             {image ? (
                                                 <>
                                                     <img src={image} className="w-full h-full object-cover" alt="Preview" />
-                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-10">
                                                         <label className="cursor-pointer bg-white px-4 py-2 rounded-full font-bold text-xs">Replace Photo</label>
                                                     </div>
                                                 </>
@@ -339,7 +339,11 @@ const MenuManager = () => {
 
                                 <div className="flex gap-4 pt-4">
                                     <button type="button" onClick={()=>{ setShowModal(false); resetForm(); }} className="flex-1 py-4 bg-gray-100 text-gray-600 font-black rounded-[20px] hover:bg-gray-200 transition-all active:scale-95">Cancel</button>
-                                    <button type="submit" className="flex-[2] py-4 bg-primary-600 text-white font-black rounded-[20px] shadow-xl shadow-primary-500/20 hover:bg-primary-700 transition-all active:scale-95">
+                                    <button 
+                                        type="submit" 
+                                        disabled={!category || category.length < 12}
+                                        className={`flex-[2] py-4 text-white font-black rounded-[20px] shadow-xl transition-all active:scale-95 ${(!category || category.length < 12) ? 'bg-gray-300 cursor-not-allowed shadow-none' : 'bg-primary-600 shadow-primary-500/20 hover:bg-primary-700'}`}
+                                    >
                                         {editId ? 'Save Changes' : 'Initialize Item'}
                                     </button>
                                 </div>
