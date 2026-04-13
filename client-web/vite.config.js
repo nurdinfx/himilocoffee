@@ -4,6 +4,10 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    // Hard-bake the production API URL at build time - no env var needed on Vercel
+    '__API_BASE__': JSON.stringify('https://himilocoffee.onrender.com')
+  },
   plugins: [
     react(),
     VitePWA({
