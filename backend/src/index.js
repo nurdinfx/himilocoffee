@@ -16,7 +16,28 @@ const app = express();
 const server = http.createServer(app);
 
 // Middleware
-app.use(cors());
+// Enforce Production-Ready CORS Policy
+const allowedOrigins = [
+  'http://localhost:5173', // Local Vite
+  'http://localhost:3000', // Local Admin/Mobile Dev
+  'https://himilocoffee-pzan.vercel.app', // Production Frontend
+  process.env.FRONTEND_URL // Dynamic Fallback
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Check if the origin is explicitly allowed or if it's a Vercel preview branch
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
+  },
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
