@@ -1,9 +1,26 @@
 import { useState } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Menu as MenuIcon, Search, X, LogOut, ChevronRight } from 'lucide-react';
+import { ShoppingCart, User, Menu as MenuIcon, X, LogOut, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
+
+const SearchIcon = ({ className, size = 20 }) => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width={size} 
+        height={size} 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className={className}
+    >
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+    </svg>
+);
 
 const MainLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -54,7 +71,7 @@ const MainLayout = () => {
             {/* Actions */}
             <div className="flex items-center space-x-3 sm:space-x-5">
               <button className="hidden sm:block text-gray-500 hover:text-primary-600 transition-colors p-2">
-                <Search className="w-6 h-6" />
+                <SearchIcon className="w-6 h-6" />
               </button>
               
               <Link to="/cart" className="relative text-gray-500 hover:text-primary-600 transition-colors p-2">
