@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image, SafeAreaView, ActivityIndicator } from 'react-native';
-import api from '../services/api';
+import api, { BASE_URL } from '../services/api';
 import { useCart } from '../contexts/CartContext';
 import { ShoppingBag, ChevronLeft, Plus } from 'lucide-react-native';
 
@@ -28,7 +28,7 @@ const MenuScreen = ({ route, navigation }) => {
   const renderProduct = ({ item }) => {
     const imageUrl = item.image?.startsWith('http') 
         ? item.image 
-        : `http://10.0.2.2:5000${item.image}`;
+        : `${BASE_URL}${item.image}`;
 
     return (
         <View className="mb-6 bg-white p-5 rounded-[28px] flex-row items-center border border-gray-100 shadow-xl shadow-black/5">
