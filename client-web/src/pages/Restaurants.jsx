@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api, { BASE_URL } from '../services/api';
 import { Link } from 'react-router-dom';
+import { getImageUrl as getValidImageUrl } from '../utils/getImageUrl';
 
 const Restaurants = () => {
    const [restaurants, setRestaurants] = useState([]);
@@ -22,10 +23,7 @@ const Restaurants = () => {
 
    const getImageUrl = (restaurant) => {
       if (restaurant.image) {
-         if (restaurant.image.startsWith('data:') || restaurant.image.startsWith('http')) {
-            return restaurant.image;
-         }
-         return `${BASE_URL}${restaurant.image}`;
+         return getValidImageUrl(restaurant.image);
       }
       // Placeholder images - stable unsplash URLs
       const placeholders = [

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api, { BASE_URL } from '../services/api';
 import { useCart } from '../contexts/CartContext';
 import { MenuSkeleton } from '../components/Skeleton';
+import { getImageUrl } from '../utils/getImageUrl';
 
 // Icons
 const ShoppingBagIcon = ({ className, size = 20 }) => (
@@ -72,9 +73,7 @@ const Menu = () => {
   }, [searchQuery, products]);
 
   const renderProductImage = (product) => {
-    const imageUrl = product.image?.startsWith('data:') || product.image?.startsWith('http')
-      ? product.image
-      : `${BASE_URL}${product.image}`;
+    const imageUrl = getImageUrl(product.image);
 
     return (
       <img

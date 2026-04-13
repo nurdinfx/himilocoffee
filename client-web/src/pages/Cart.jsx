@@ -5,6 +5,7 @@ import api from '../services/api';
 import { Trash2, ShoppingBag, ArrowLeft, CreditCard } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { getImageUrl } from '../utils/getImageUrl';
 
 const Cart = () => {
   const { cartItems, removeFromCart, clearCart } = useCart();
@@ -76,7 +77,7 @@ const Cart = () => {
               className="bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-100 flex items-center p-3 sm:p-5 group transition-all hover:shadow-md h-28 sm:h-36"
             >
                 <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 rounded-2xl overflow-hidden flex-shrink-0">
-                  <img src={item.image || 'https://via.placeholder.com/100'} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                  <img src={getImageUrl(item.image)} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                 </div>
                 <div className="ml-4 sm:ml-6 flex-grow min-w-0">
                   <div className="flex justify-between items-start">
