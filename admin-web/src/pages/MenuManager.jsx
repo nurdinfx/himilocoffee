@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api, { BASE_URL } from '../services/api';
 import { Plus, Edit2, Trash2, Image as ImageIcon, Filter, X, ChevronRight, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getImageUrl } from '../utils/getImageUrl';
 
 const SearchIcon = ({ className, size = 20 }) => (
     <svg 
@@ -224,7 +225,7 @@ const MenuManager = () => {
                                         <div className="w-20 h-20 bg-gray-100 rounded-[24px] overflow-hidden border-2 border-white shadow-xl group-hover:scale-105 transition-transform">
                                             <img 
                                                 className="h-full w-full object-cover" 
-                                                src={item.image?.startsWith('data:') || item.image?.startsWith('http') ? item.image : `${BASE_URL}${item.image}`} 
+                                                src={getImageUrl(item.image)} 
                                                 alt={item.name} 
                                                 onError={(e) => {
                                                     e.target.onerror = null;
@@ -326,7 +327,7 @@ const MenuManager = () => {
                                         <div className="relative aspect-square bg-gray-50 rounded-[32px] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center overflow-hidden group">
                                             {image ? (
                                                 <>
-                                                    <img src={image} className="w-full h-full object-cover" alt="Preview" />
+                                                    <img src={getImageUrl(image)} className="w-full h-full object-cover" alt="Preview" />
                                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-10">
                                                         <label className="cursor-pointer bg-white px-4 py-2 rounded-full font-bold text-xs">Replace Photo</label>
                                                     </div>

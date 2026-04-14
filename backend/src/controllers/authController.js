@@ -81,8 +81,16 @@ const registerUser = async (req, res) => {
       const messages = Object.values(error.errors).map(e => e.message);
       return res.status(400).json({ message: messages.join(', ') });
     }
-    console.error('Registration error:', error.message);
-    res.status(500).json({ message: 'Server Error during registration', error: error.message });
+    console.error('Registration Error Details:', {
+      message: error.message,
+      stack: error.stack,
+      body: req.body // Be careful with passwords in real prod, but helpful for debugging now
+    });
+    res.status(500).json({ 
+      message: 'Server Error during registration', 
+      error: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 };
 

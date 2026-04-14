@@ -16,10 +16,25 @@ const getProducts = async (req, res) => {
         }
       : {};
 
-    const products = await Product.find({ ...keyword }).populate('category', 'name');
-    res.json(products);
+    const products = await Product.find({ ...keyword }).populate({
+      path: 'category',
+      select: 'name',
+      match: { _id: { $ne: null } } // Only populate if category exists
+    });
+    
+    // Safety check for products with deleted or missing categories
+    const sanitizedProducts = products.map(p => {
+      const product = p.toObject();
+      if (!product.category) {
+        product.category = { name: 'Uncategorized' };
+      }
+      return product;
+    });
+
+    res.json(sanitizedProducts);
   } catch (error) {
-    res.status(500).json({ message: 'Server Error', error: error.message });
+    console.error('getProducts Error:', error);
+    res.status(500).json({ message: 'Server Error fetching products', error: error.message });
   }
 };
 
