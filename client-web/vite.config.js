@@ -13,6 +13,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'inline', // Inline the registration script to avoid 404 for registerSW.js
+      manifestFilename: 'manifest.webmanifest',
       workbox: {
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,webmanifest}']
