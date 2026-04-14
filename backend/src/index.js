@@ -24,26 +24,49 @@ const allowedOrigins = [
   process.env.FRONTEND_URL // Dynamic Fallback
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    // Check if the origin is explicitly allowed or if it's a Vercel preview branch
-    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
-      return callback(null, true);
+// FIXED CORS Middleware - No next() issues
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  // Allow requests with no origin
+  if (!origin) {
+    return next();
+  }
+
+  // Check if origin is allowed
+  const isAllowed = allowedOrigins.includes(origin) ||
+    (origin && origin.endsWith('.vercel.app'));
+
+  if (isAllowed) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
     }
-    
-    return callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
-  },
-  credentials: true
-}));
+
+    return next();
+  }
+
+  // Reject unauthorized origins
+  console.warn(`CORS blocked origin: ${origin}`);
+  return res.status(403).json({
+    message: 'CORS policy does not allow access from this origin'
+  });
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files
+// Static files - FIX for localhost images
 app.use('/public', express.static(path.join(__dirname, '../public')));
 app.use('/images', express.static(path.join(__dirname, '../public/images')));
+
+// ALSO serve images from root /uploads if needed
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 const io = new Server(server, {
   cors: {
@@ -85,12 +108,28 @@ app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/upload', uploadRoutes);
 
+// Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'success', message: 'API is running' });
+  res.status(200).json({ status: 'success', message: 'API is running' });
+});
+
+// Global error handler - MUST BE LAST
+app.use((err, req, res, next) => {
+  console.error('Global error:', err);
+  res.status(500).json({
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+  });
+});
+
+// Handle 404 routes
+app.use('*', (req, res) => {
+  res.status(404).json({ message: `Route ${req.originalUrl} not found` });
 });
 
 // Start Server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log(`Allowed origins:`, allowedOrigins.filter(Boolean));
 });
