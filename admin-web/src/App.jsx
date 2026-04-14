@@ -7,7 +7,7 @@ import OrdersManager from './pages/OrdersManager';
 import MenuManager from './pages/MenuManager';
 import CustomersManager from './pages/CustomersManager';
 import Settings from './pages/Settings';
-import ReloadPrompt from './components/ReloadPrompt';
+
 
 const ProtectedRoute = ({ children }) => {
   const { admin } = useAuth();
@@ -30,7 +30,6 @@ function App() {
           </Route>
         </Routes>
       </Router>
-      <ReloadPrompt />
     </AuthProvider>
   );
 }

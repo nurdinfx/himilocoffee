@@ -13,7 +13,7 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import OrderHistory from './pages/OrderHistory';
 import Profile from './pages/Profile';
-import ReloadPrompt from './components/ReloadPrompt';
+
 
 // Quick Landing Page Component
 const Home = () => {
@@ -93,7 +93,6 @@ function App() {
           </Routes>
         </Router>
       </CartProvider>
-      <ReloadPrompt />
     </AuthProvider>
   );
 }
