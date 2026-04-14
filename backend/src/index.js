@@ -16,47 +16,27 @@ const app = express();
 const server = http.createServer(app);
 
 // Middleware
-// Enforce Production-Ready CORS Policy
+// Production-Ready CORS Policy
 const allowedOrigins = [
-  'http://localhost:5173', // Local Vite
-  'http://localhost:3000', // Local Admin/Mobile Dev
-  'https://himilocoffee-pzan.vercel.app', // Production Frontend
-  process.env.FRONTEND_URL // Dynamic Fallback
-];
+  'http://localhost:5173', 
+  'http://localhost:3000', 
+  'https://himilocoffee-pzan.vercel.app',
+  process.env.FRONTEND_URL
+].filter(Boolean);
 
-// FIXED CORS Middleware - No next() issues
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-
-  // Allow requests with no origin
-  if (!origin) {
-    return next();
-  }
-
-  // Check if origin is allowed
-  const isAllowed = allowedOrigins.includes(origin) ||
-    (origin && origin.endsWith('.vercel.app'));
-
-  if (isAllowed) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-
-    // Handle preflight requests
-    if (req.method === 'OPTIONS') {
-      return res.status(200).end();
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
     }
-
-    return next();
-  }
-
-  // Reject unauthorized origins
-  console.warn(`CORS blocked origin: ${origin}`);
-  return res.status(403).json({
-    message: 'CORS policy does not allow access from this origin'
-  });
-});
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -131,5 +111,6 @@ app.use('*', (req, res) => {
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log(`Production URL: ${process.env.BASE_URL || 'https://himilocoffee.onrender.com'}`);
   console.log(`Allowed origins:`, allowedOrigins.filter(Boolean));
 });

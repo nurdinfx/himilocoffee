@@ -135,4 +135,30 @@ export const clearAuthData = () => {
   delete api.defaults.headers.common['Authorization'];
 };
 
+// Helper to safely format image URLs and avoid mixed content/localhost errors
+export const getSafeImageUrl = (imagePath) => {
+  if (!imagePath) {
+    return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop';
+  }
+
+  // If it's already a full production URL or a Data URI (MongoDB Base64), return it
+  if (imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+    return imagePath;
+  }
+
+  // Replace localhost/127.0.0.1 with production BASE_URL
+  if (imagePath.includes('localhost') || imagePath.includes('127.0.0.1')) {
+    const cleanPath = imagePath.replace(/^https?:\/\/[^/]+/, '');
+    return `${BASE_URL}${cleanPath.startsWith('/') ? cleanPath : '/' + cleanPath}`;
+  }
+
+  // Handle relative paths
+  if (!imagePath.startsWith('http')) {
+    const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+    return `${BASE_URL}${cleanPath}`;
+  }
+
+  return imagePath;
+};
+
 export default api;

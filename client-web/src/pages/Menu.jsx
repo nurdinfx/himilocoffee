@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api, { BASE_URL } from '../services/api';
+import api, { BASE_URL, getSafeImageUrl } from '../services/api';
 import { useCart } from '../contexts/CartContext';
 import { MenuSkeleton } from '../components/Skeleton';
 import { getImageUrl } from '../utils/getImageUrl';
@@ -73,7 +73,7 @@ const Menu = () => {
   }, [searchQuery, products]);
 
   const renderProductImage = (product) => {
-    const imageUrl = getImageUrl(product.image);
+    const imageUrl = getSafeImageUrl(product.image);
 
     return (
       <img
