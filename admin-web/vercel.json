@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/manifest.json", "destination": "/manifest.json" },
+    { "source": "/manifest.webmanifest", "destination": "/manifest.json" },
     { "source": "/sw.js", "destination": "/sw.js" },
     { "source": "/favicon.svg", "destination": "/favicon.svg" },
     { "source": "/pwa-192x192.png", "destination": "/pwa-192x192.png" },

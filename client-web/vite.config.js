@@ -11,6 +11,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      selfDestroying: true,
       registerType: 'autoUpdate',
       injectRegister: 'inline', // Inline the registration script to avoid 404 for registerSW.js
       manifestFilename: 'manifest.json',
