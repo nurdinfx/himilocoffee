@@ -2,8 +2,8 @@ import { useRegisterSW } from 'virtual:pwa-register/react';
 
 const ReloadPrompt = () => {
   const {
-    offlineReady: [offlineReady, setOfflineReady],
-    needUpdate: [needUpdate, setNeedUpdate],
+    offlineReady: offlineReadyState,
+    needUpdate: needUpdateState,
     updateServiceWorker,
   } = useRegisterSW({
     onRegistered(r) {
@@ -13,6 +13,9 @@ const ReloadPrompt = () => {
       console.log('SW registration error', error);
     },
   });
+
+  const [offlineReady, setOfflineReady] = offlineReadyState || [false, () => {}];
+  const [needUpdate, setNeedUpdate] = needUpdateState || [false, () => {}];
 
   const close = () => {
     setOfflineReady(false);

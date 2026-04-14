@@ -1,13 +1,12 @@
 {
   "rewrites": [
-    {
-      "source": "/(manifest.json|manifest.webmanifest|sw.js|favicon.svg|pwa-192x192.png|pwa-512x512.png)",
-      "destination": "/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/manifest.webmanifest", "destination": "/manifest.webmanifest" },
+    { "source": "/sw.js", "destination": "/sw.js" },
+    { "source": "/registerSW.js", "destination": "/registerSW.js" },
+    { "source": "/favicon.svg", "destination": "/favicon.svg" },
+    { "source": "/pwa-192x192.png", "destination": "/pwa-192x192.png" },
+    { "source": "/pwa-512x512.png", "destination": "/pwa-512x512.png" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
