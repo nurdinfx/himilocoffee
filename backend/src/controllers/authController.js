@@ -31,6 +31,8 @@ const authUser = async (req, res) => {
   }
 };
 
+const mongoose = require('mongoose');
+
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
@@ -38,26 +40,37 @@ const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    // Validate required fields explicitly
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: 'Name, email, and password are required' });
+    // 0. Explicit DB Check - Ensure we are connected
+    if (mongoose.connection.readyState !== 1) {
+      console.error('DB Connection state is NOT connected:', mongoose.connection.readyState);
+      return res.status(500).json({ message: 'Database connection issue. Please try again in 30 seconds.' });
     }
 
-    if (password.length < 6) {
+    // 1. Explicit Validation
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      return res.status(400).json({ message: 'Name is required and must be a string' });
+    }
+    if (!email || typeof email !== 'string' || !email.trim()) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+    if (!password || password.length < 6) {
       return res.status(400).json({ message: 'Password must be at least 6 characters' });
     }
 
-    const userExists = await User.findOne({ email: email.toLowerCase().trim() });
+    // 2. Check if user exists
+    const sanitizedEmail = email.toLowerCase().trim();
+    const userExists = await User.findOne({ email: sanitizedEmail });
 
     if (userExists) {
       return res.status(400).json({ message: 'User already exists with this email' });
     }
 
+    // 3. Create user
     const user = await User.create({
       name: name.trim(),
-      email: email.toLowerCase().trim(),
-      password,
-      role: role || 'customer',
+      email: sanitizedEmail,
+      password, // Pre-save hook will hash this
+      role: role && ['customer', 'admin', 'driver'].includes(role) ? role : 'customer',
     });
 
     if (user) {
@@ -69,27 +82,25 @@ const registerUser = async (req, res) => {
         token: generateToken(user._id),
       });
     } else {
-      res.status(400).json({ message: 'Invalid user data' });
+      res.status(400).json({ message: 'Invalid user data provided' });
     }
   } catch (error) {
-    // Handle MongoDB duplicate key error
-    if (error.code === 11000) {
-      return res.status(400).json({ message: 'Email already registered' });
-    }
-    // Handle Mongoose validation errors
-    if (error.name === 'ValidationError') {
-      const messages = Object.values(error.errors).map(e => e.message);
-      return res.status(400).json({ message: messages.join(', ') });
-    }
-    console.error('Registration Error Details:', {
+    console.error('Registration Error Phase 2:', {
+      name: error.name,
       message: error.message,
-      stack: error.stack,
-      body: req.body // Be careful with passwords in real prod, but helpful for debugging now
+      code: error.code,
+      stack: error.stack
     });
+    
+    // Distinguish between Mongoose and generic error
+    const detailedMessage = error.name === 'ValidationError' 
+      ? Object.values(error.errors).map(e => e.message).join(', ')
+      : error.message;
+
     res.status(500).json({ 
-      message: 'Server Error during registration', 
-      error: error.message,
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      message: `System error: ${error.name}`, 
+      error: detailedMessage,
+      diagnostic: 'Registration failed at creation stage'
     });
   }
 };

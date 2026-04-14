@@ -12,8 +12,40 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'auto',
-      includeAssets: ['favicon.svg', 'pwa-192x192.png', 'pwa-512x512.png']
+      injectRegister: 'inline', // Inline the registration script to avoid 404 for registerSW.js
+      workbox: {
+        cleanupOutdatedCaches: true,
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,webmanifest}']
+      },
+      includeAssets: ['favicon.svg', 'pwa-192x192.png', 'pwa-512x512.png', 'auth-bg.png'],
+      manifest: {
+        name: 'Himilo Coffee',
+        short_name: 'Himilo Coffee',
+        description: 'Order your favorite coffee and food from Himilo Coffee',
+        theme_color: '#8B4513',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
+        scope: '/',
+        icons: [
+          {
+            src: '/pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: '/pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: '/pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          }
+        ]
+      }
     })
   ],
 })

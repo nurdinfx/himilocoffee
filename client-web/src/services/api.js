@@ -10,7 +10,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  timeout: 30000, // 30 seconds timeout
+  timeout: 60000, // 60 seconds timeout (to handle Render cold starts)
 });
 
 // Request Interceptor - Token-ka ku dar header-ka
